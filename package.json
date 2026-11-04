@@ -1,0 +1,21 @@
+{
+  "name": "paw-pertemuan-6",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Tugas Praktikum Pemrograman Aplikasi Web (PAW) Pertemuan 6 - Git, npm, TypeScript, dan Vite",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.4"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^22.13.1",
+    "typescript": "~5.7.3",
+    "vite": "^6.1.1"
+  }
+}
