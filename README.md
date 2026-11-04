@@ -12,7 +12,9 @@
 **Pengembang**: [Rio Alfian (Syahril Arfian Almazril)](https://github.com/rlfian) (NIM: **1247050145**)  
 **Program Studi**: Teknik Informatika &bull; **Institusi**: UIN Sunan Gunung Djati Bandung
 
-[🌐 Kunjungi Live Demo Aplikasi](https://paw-pertemuan-6.vercel.app) &bull; [📂 Repositori GitHub](https://github.com/rlfian/PAW-Pertemuan-6) &bull; [📄 Dokumentasi Git Workflow](docs/git-workflow.md)
+[🌐 Kunjungi Live Demo Aplikasi (GitHub Pages)](https://rlfian.github.io/PAW-Pertemuan-6/) &bull; [📂 Repositori GitHub](https://github.com/rlfian/PAW-Pertemuan-6) &bull; [📄 Dokumentasi Git Workflow](docs/git-workflow.md)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/rlfian/PAW-Pertemuan-6)
 
 </div>
 
