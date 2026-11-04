@@ -146,5 +146,5 @@ export const INITIAL_TASKS: Task[] = [
   }
 ];
 
-export const TASK_STORAGE_KEY = 'taskflow_paw_tasks_v1';
+export const TASK_STORAGE_KEY = 'taskflow_paw_tasks_production_main_v1';
 export const taskStorage = new LocalStorageService<Task[]>(INITIAL_TASKS);
