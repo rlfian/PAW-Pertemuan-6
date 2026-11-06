@@ -1,8 +1,9 @@
 <div align="center">
 
-# ✈️ TASKFLOW PAW — Manajemen Tugas Kuliah
+# 🎓 EduCore LMS — Portal Akademik & Manajemen Tugas Kuliah
 
-### Aplikasi Web Modern Berbasis TypeScript & Vite (Praktikum Pertemuan 6)
+### Aplikasi Web Modern Berbasis TypeScript & Vite (Praktikum Pertemuan 6 PAW)
+**Desain & UI Mengadopsi EduCore LMS UIN Sunan Gunung Djati Bandung**
 
 [![Vite](https://img.shields.io/badge/Vite-6.1.1-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -12,9 +13,7 @@
 **Pengembang**: [Rio Alfian (Syahril Arfian Almazril)](https://github.com/rlfian) (NIM: **1247050145**)  
 **Program Studi**: Teknik Informatika &bull; **Institusi**: UIN Sunan Gunung Djati Bandung
 
-[🌐 Kunjungi Live Demo Aplikasi (GitHub Pages)](https://rlfian.github.io/PAW-Pertemuan-6/) &bull; [📂 Repositori GitHub](https://github.com/rlfian/PAW-Pertemuan-6) &bull; [📄 Dokumentasi Git Workflow](docs/git-workflow.md)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/rlfian/PAW-Pertemuan-6)
+[🌐 Kunjungi Live Demo EduCore LMS (GitHub Pages)](https://rlfian.github.io/PAW-Pertemuan-6/) &bull; [📂 Repositori GitHub](https://github.com/rlfian/PAW-Pertemuan-6) &bull; [📄 Dokumentasi Git Workflow](docs/git-workflow.md)
 
 </div>
 
@@ -22,21 +21,23 @@
 
 ## 📌 Deskripsi Proyek
 
-**TaskFlow PAW** adalah aplikasi web interaktif yang dirancang khusus untuk mengelola daftar tugas kuliah secara rapi, responsif, dan terstruktur. Aplikasi ini dibangun dengan standar arsitektur **Vanilla TypeScript** dan **Vite** yang mengadopsi estetika desain modern *Sky Blue Origami & Paper Elevation* (mengadaptasi visual referensi template formulir perjalanan beraksen lipatan kertas).
+**EduCore LMS** adalah portal pembelajaran terpadu dan sistem manajemen tugas kuliah modern untuk mahasiswa Teknik Informatika UIN Sunan Gunung Djati Bandung. Aplikasi ini dibangun secara murni menggunakan arsitektur **Vanilla TypeScript** dan **Vite**, mengimplementasikan antarmuka akademis resmi dengan 4 navigasi tampilan terintegrasi:
 
-Aplikasi ini mencakup seluruh fitur CRUD tugas kuliah, filter status, pencarian realtime, penghitungan tenggat waktu otomatis, sistem penyimpanan lokal persisten (*LocalStorage* generic), serta modul edukasi terintegrasi yang menjelaskan materi pokok praktikum.
+1. **Dashboard Utama Mahasiswa**: Hero card profil mahasiswa Rio Alfian (NIM 1247050145), 4 kartu ringkasan metrik akademik (IPK 3.88, 21 SKS, Presensi 96.4%, 3 Diskusi), katalog 6 kartu mata kuliah aktif, jadwal kuliah hari ini, widget to-do list interaktif, serta pengumuman rektorat.
+2. **Detail Mata Kuliah (`IF-301 • Pemrograman Aplikasi Web`)**: Ring presensi 100%, tombol sinkronisasi Zoom perkuliahan virtual, kartu pertemuan aktif *P-6 Sedang Berlangsung* dengan rincian CPMK, unduhan slide materi teori & rekaman, banner tugas praktikum, riwayat pertemuan lampau, dan widget konsultasi asisten lab.
+3. **TaskFlow CRUD Manager**: Sistem manajemen tugas terpadu dengan formulir penambahan tugas baru, modal edit, konfirmasi hapus, pengalihan status selesai/belum selesai dengan efek animasi *confetti*, penyaringan status, dan pencarian instan.
+4. **Dokumentasi Modul Akademik**: Penjelasan komprehensif materi praktikum Pertemuan 6 (Git/GitHub, npm & SemVer, TypeScript types/generics, peran Compiler/Transpiler/Bundler Vite, serta isolasi keamanan Environment Variables).
 
 ---
 
 ## ✨ Fitur Utama Aplikasi
 
-1. **Daftar Tugas Kuliah (Task List)**: Menampilkan kartu tugas interaktif lengkap dengan nama mata kuliah, tanggal deadline, tag kategori, catatan khusus, dan badge prioritas (Tinggi, Sedang, Rendah).
-2. **Tambah Tugas Baru**: Formulir terstruktur dengan validasi input, pemilihan prioritas, dan input tag kategori.
-3. **Sunting & Hapus Tugas**: Modal pengeditan yang ramah pengguna serta konfirmasi penghapusan data.
-4. **Status Pengerjaan**: Checkbox interaktif untuk mengubah status (Belum Selesai $\leftrightarrow$ Selesai) dilengkapi efek animasi perayaan (*confetti*).
-5. **Penyaringan & Pengurutan (Filter & Sort)**: Filter instan berdasarkan status (Semua / Belum Selesai / Selesai), pencarian teks bebas, dan pengurutan (Deadline / Prioritas / Terbaru).
-6. **Statistik Progres Akademik**: 4 kartu ringkasan menampilkan Total Tugas, Belum Selesai, Telah Selesai, dan Persentase Progres Kelulusan Tugas.
-7. **Modul Panduan Materi Kuliah**: Menyajikan 4 kartu perbandingan interaktif (*Folded Bookmark Cards*) yang menjelaskan Git & GitHub, npm & SemVer, TypeScript, Vite & Bundler/Transpiler, serta protokol keamanan `.env`.
+- **Full Reactive Multi-View**: Navigasi mulus antar 4 tab (*Dashboard*, *Detail Kelas IF-301*, *Tugas & Ujian*, dan *Modul Edukasi*) tanpa reload halaman.
+- **Daftar Tugas Kuliah (CRUD)**: Menampilkan kartu tugas interaktif lengkap dengan nama mata kuliah, tanggal deadline, tag kategori, catatan khusus, dan badge prioritas (Tinggi, Sedang, Rendah).
+- **Status Pengerjaan**: Checkbox interaktif untuk mengubah status (Belum Selesai $\leftrightarrow$ Selesai) terhubung langsung dengan to-do list di Dashboard dan modal TaskFlow.
+- **Penyimpanan Lokal Persisten (LocalStorage Generics)**: Seluruh manipulasi data tersimpan secara aman di browser client melalui `LocalStorageService<T>`.
+- **Penyaringan & Pengurutan Cepat**: Filter instan (Semua / Belum Selesai / Selesai), pencarian realtime, dan pengurutan deadline otomatis.
+- **Desain Responsif & Ergonomis**: Mengikuti standar token CSS `:root`, font family Inter, palet warna institusional Navy (`#0b2240` / `#0084ff`), mobile safe area, dan bebas AI visual slop.
 
 ---
 
@@ -111,14 +112,19 @@ Dalam arsitektur web modern yang digunakan pada proyek ini:
 ## 📸 Bukti Tangkapan Layar (Screenshots)
 
 Seluruh berkas bukti screenshot hasil otomatisasi tersimpan di direktori [`docs/screenshots/`](docs/screenshots/):
-- `01-tampilan-utama-taskflow.png` — Tampilan antarmuka utama tema Sky Blue Origami.
-- `02-tambah-dan-filter-tugas.png` — Interaksi CRUD dan penyaringan tugas.
-- `03-modul-materi-dan-dokumentasi.png` — Modul 4 kartu perbandingan materi kuliah.
-- `04-git-commit-history-dan-branches.png` — Bukti riwayat 7+ commit dan branch.
+
+### Antarmuka EduCore LMS (Desain Baru)
+- `01-educore-lms-dashboard.png` — Dashboard Mahasiswa EduCore LMS (Hero profile Rio Alfian, 4 kartu metrik, 6 kartu mata kuliah, jadwal kuliah, dan to-do list).
+- `02-educore-course-detail-paw.png` — Tampilan Kelas Mata Kuliah IF-301 Pemrograman Aplikasi Web (Presensi 100%, Zoom CTA, Pertemuan 6 aktif, materi perkuliahan, dan banner tugas).
+- `03-educore-taskflow-crud.png` — Antarmuka TaskFlow CRUD Manager (Form tambah tugas, filter, sorting, dan manajemen status).
+- `04-educore-documentation-paw.png` — Dokumentasi Akademik interaktif (Git, npm, TypeScript, Vite Bundler, dan Environment Variables).
+
+### Bukti Git & GitHub Workflow
+- `04-git-commit-history-dan-branches.png` — Bukti riwayat 11+ commit semantik dan branching.
 - `05-git-merge-conflict-resolution.png` — Bukti simulasi & penyelesaian merge conflict.
-- `06-github-pull-request-status.png` — Bukti pembuatan dan merge Pull Request di GitHub.
+- `06-github-pull-request-status.png` — Bukti pembuatan dan merge Pull Request #1 di GitHub.
 
 ---
 
 ## 📄 Lisensi
-Hak Cipta &copy; 2026 **Rio Alfian (Syahril Arfian Almazril)**. Didistribusikan di bawah lisensi MIT.
+Hak Cipta &copy; 2026 **Rio Alfian (Syahril Arfian Almazril)** &bull; NIM: 1247050145. Didistribusikan di bawah lisensi MIT.

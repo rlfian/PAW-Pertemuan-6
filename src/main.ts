@@ -1,16 +1,18 @@
 import confetti from 'canvas-confetti';
-import { renderDocumentation } from './components/Documentation';
+import { renderCourseDetailView } from './components/CourseDetailView';
+import { renderDashboardView } from './components/DashboardView';
+import { renderDocumentationView } from './components/DocumentationView';
 import { renderFooter } from './components/Footer';
-import { renderHeader, type HeaderStats } from './components/Header';
+import type { HeaderStats } from './components/Header';
 import { renderEditModal } from './components/Modal';
-import { renderTaskList } from './components/TaskList';
+import { renderNavbar, type NavTab } from './components/Navbar';
+import { renderTaskManagerView } from './components/TaskManagerView';
 import { getAppConfig } from './services/env';
 import { TASK_STORAGE_KEY, taskStorage } from './services/storage';
 import type { CourseName, FilterStatus, Task, TaskFilterOptions, TaskPriority } from './types/task';
 import { cloneData, filterItems, generateId, sortTasks } from './utils/helpers';
 
-// State Aplikasi
-class TaskFlowApp {
+class EduCoreApp {
   private tasks: Task[] = [];
   private filter: TaskFilterOptions = {
     status: 'semua',
@@ -18,7 +20,7 @@ class TaskFlowApp {
     searchQuery: '',
     sortBy: 'createdAt'
   };
-  private activeTab: 'tasks' | 'docs' = 'tasks';
+  private activeTab: NavTab = 'dashboard';
   private editingTask: Task | null = null;
   private readonly appConfig = getAppConfig();
 
@@ -27,11 +29,11 @@ class TaskFlowApp {
   }
 
   private init(): void {
-    // Muat data dari Generic LocalStorage Service
+    // 1. Muat data dari Generic LocalStorage Service
     const storageResult = taskStorage.get(TASK_STORAGE_KEY);
     this.tasks = storageResult.data || [];
 
-    // Render awal
+    // 2. Render awal
     this.render();
   }
 
@@ -44,11 +46,7 @@ class TaskFlowApp {
     return { total, pending, completed, completionRate };
   }
 
-  /**
-   * Menggunakan Generic Filter function untuk menyaring data tugas
-   */
   private getFilteredTasks(): Task[] {
-    // 1. Generic Filter berdasarkan status dan kata kunci
     const filtered = filterItems(this.tasks, (task: Task) => {
       // Filter Status
       if (this.filter.status === 'belum_selesai' && task.isCompleted) return false;
@@ -66,7 +64,6 @@ class TaskFlowApp {
       return true;
     });
 
-    // 2. Sorting
     return sortTasks(filtered, this.filter.sortBy);
   }
 
@@ -81,10 +78,21 @@ class TaskFlowApp {
     const stats = this.calculateStats();
     const filteredTasks = this.getFilteredTasks();
 
+    let contentHtml = '';
+    if (this.activeTab === 'dashboard') {
+      contentHtml = `<div class="container">${renderDashboardView(this.appConfig, stats, this.tasks)}</div>`;
+    } else if (this.activeTab === 'course-detail') {
+      contentHtml = `<div class="container">${renderCourseDetailView(this.appConfig, stats, this.tasks)}</div>`;
+    } else if (this.activeTab === 'tasks') {
+      contentHtml = `<div class="container">${renderTaskManagerView(filteredTasks, this.filter)}</div>`;
+    } else if (this.activeTab === 'docs') {
+      contentHtml = `<div class="container">${renderDocumentationView()}</div>`;
+    }
+
     appEl.innerHTML = `
-      ${renderHeader(this.appConfig, stats, this.activeTab)}
+      ${renderNavbar(this.appConfig, this.activeTab)}
       <main id="main-content">
-        ${this.activeTab === 'tasks' ? renderTaskList(filteredTasks, this.filter) : renderDocumentation()}
+        ${contentHtml}
       </main>
       ${renderFooter(this.appConfig)}
       <div id="modal-container">${renderEditModal(this.editingTask)}</div>
@@ -94,44 +102,57 @@ class TaskFlowApp {
   }
 
   private attachEventListeners(): void {
-    // Navigasi Tab (Daftar Tugas vs Panduan Materi)
-    const navTasks = document.getElementById('nav-btn-tasks');
-    const navDocs = document.getElementById('nav-btn-docs');
-    const tabNewTask = document.getElementById('tab-new-task');
-    const tabGotoGuide = document.getElementById('tab-goto-guide');
-
-    navTasks?.addEventListener('click', () => {
-      this.activeTab = 'tasks';
-      this.render();
+    // 1. Delegasi Navigasi Tab (Navbar, Cards, Buttons dengan data-nav)
+    document.querySelectorAll<HTMLElement>('[data-nav]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetNav = el.getAttribute('data-nav') as NavTab;
+        if (targetNav) {
+          this.activeTab = targetNav;
+          this.render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
     });
 
-    navDocs?.addEventListener('click', () => {
-      this.activeTab = 'docs';
+    // 2. Klik Brand Logo kembali ke Dashboard
+    const brandHome = document.getElementById('nav-brand-home');
+    brandHome?.addEventListener('click', () => {
+      this.activeTab = 'dashboard';
       this.render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    tabNewTask?.addEventListener('click', () => {
-      this.activeTab = 'tasks';
-      this.render();
-      document.getElementById('task-title-input')?.focus();
+    // 3. Tombol Presensi di Hero Card
+    const btnHeroAttendance = document.getElementById('btn-hero-attendance');
+    btnHeroAttendance?.addEventListener('click', () => {
+      alert('Presensi perkuliahan berhasil dicatat! Status: Hadir Tepat Waktu (08:02 WIB).');
     });
 
-    tabGotoGuide?.addEventListener('click', () => {
-      this.activeTab = 'docs';
-      this.render();
-      window.scrollTo({ top: 300, behavior: 'smooth' });
+    // 4. Pencarian Kursus di Dashboard
+    const dashboardSearch = document.getElementById('dashboard-course-search') as HTMLInputElement | null;
+    dashboardSearch?.addEventListener('input', (e) => {
+      const q = (e.target as HTMLInputElement).value.toLowerCase();
+      document.querySelectorAll<HTMLElement>('.course-card').forEach(card => {
+        const title = card.querySelector('.course-card-title')?.textContent?.toLowerCase() || '';
+        const lecturer = card.querySelector('.course-card-lecturer')?.textContent?.toLowerCase() || '';
+        if (title.includes(q) || lecturer.includes(q)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
     });
 
-    // Form Tambah Tugas
+    // 5. Form Tambah Tugas Baru (di view tasks)
     const addForm = document.getElementById('add-task-form') as HTMLFormElement | null;
     addForm?.addEventListener('submit', (e) => {
       e.preventDefault();
       this.handleAddTask();
     });
 
-    // Filter Status Pills
-    const filterPills = document.querySelectorAll<HTMLButtonElement>('[data-filter-status]');
-    filterPills.forEach(pill => {
+    // 6. Filter Pills (Semua, Belum Selesai, Selesai)
+    document.querySelectorAll<HTMLButtonElement>('[data-filter-status]').forEach(pill => {
       pill.addEventListener('click', () => {
         const status = pill.getAttribute('data-filter-status') as FilterStatus;
         if (status) {
@@ -141,12 +162,11 @@ class TaskFlowApp {
       });
     });
 
-    // Filter Search Input
+    // 7. Input Search Tugas
     const searchInput = document.getElementById('filter-search-input') as HTMLInputElement | null;
     searchInput?.addEventListener('input', (e) => {
       this.filter.searchQuery = (e.target as HTMLInputElement).value;
       this.render();
-      // Keep cursor position
       const reSearch = document.getElementById('filter-search-input') as HTMLInputElement | null;
       if (reSearch) {
         reSearch.focus();
@@ -154,44 +174,49 @@ class TaskFlowApp {
       }
     });
 
-    // Sort Dropdown
+    // 8. Sort Dropdown
     const sortSelect = document.getElementById('filter-sort-select') as HTMLSelectElement | null;
     sortSelect?.addEventListener('change', (e) => {
       this.filter.sortBy = (e.target as HTMLSelectElement).value as 'deadline' | 'priority' | 'createdAt';
       this.render();
     });
 
-    // Delegasi Event untuk Aksi Tugas (Toggle Status, Edit, Delete)
-    const tasksContainer = document.getElementById('tasks-container');
-    tasksContainer?.addEventListener('click', (e) => {
+    // 9. Delegasi Global Aksi Tugas (Toggle Status, Edit, Delete)
+    document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
 
-      // 1. Toggle Status Checkbox
+      // Toggle status checkbox
       const checkbox = target.closest<HTMLInputElement>('input[data-action="toggle-status"]');
       if (checkbox) {
         const id = checkbox.getAttribute('data-id');
-        if (id) this.handleToggleStatus(id);
+        if (id) {
+          this.handleToggleStatus(id);
+        }
         return;
       }
 
-      // 2. Edit Task Button
+      // Edit task
       const editBtn = target.closest<HTMLButtonElement>('button[data-action="edit-task"]');
       if (editBtn) {
         const id = editBtn.getAttribute('data-id');
-        if (id) this.handleOpenEditModal(id);
+        if (id) {
+          this.handleOpenEditModal(id);
+        }
         return;
       }
 
-      // 3. Delete Task Button
+      // Delete task
       const deleteBtn = target.closest<HTMLButtonElement>('button[data-action="delete-task"]');
       if (deleteBtn) {
         const id = deleteBtn.getAttribute('data-id');
-        if (id) this.handleDeleteTask(id);
+        if (id) {
+          this.handleDeleteTask(id);
+        }
         return;
       }
-    });
+    }, { once: false });
 
-    // Event Modal
+    // 10. Modal Listeners
     this.attachModalListeners();
   }
 
@@ -226,7 +251,6 @@ class TaskFlowApp {
       createdAt: Date.now()
     };
 
-    // Tambahkan ke array dan simpan
     this.tasks.unshift(newTask);
     this.saveToStorage();
     this.render();
@@ -239,16 +263,15 @@ class TaskFlowApp {
     task.isCompleted = !task.isCompleted;
     task.status = task.isCompleted ? 'selesai' : 'belum_selesai';
 
-    // Efek perayaan konfeti jika tugas selesai
     if (task.isCompleted) {
       try {
         confetti({
-          particleCount: 80,
+          particleCount: 70,
           spread: 60,
-          origin: { y: 0.7 }
+          origin: { y: 0.6 }
         });
       } catch {
-        // Fallback jika browser menolak animasi
+        // Fallback jika browser memblokir animasi
       }
     }
 
@@ -330,7 +353,7 @@ class TaskFlowApp {
   }
 }
 
-// Inisialisasi Aplikasi Saat DOM Siap
+// Inisialisasi saat DOM Siap
 document.addEventListener('DOMContentLoaded', () => {
-  new TaskFlowApp();
+  new EduCoreApp();
 });
